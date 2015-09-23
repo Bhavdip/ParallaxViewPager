@@ -1,5 +1,6 @@
 package android.test.com.parallaxviewpager;
 
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,6 +18,7 @@ public class ParallxActivity extends AppCompatActivity implements ViewPager.OnPa
     private HorizontalScrollView scroll2;
     private ImageView image;
     private ImageView image2;
+    private ImageView image3;
     private ViewPageAdapter pageAdapter;
     private FrameLayout frameLayout;
 
@@ -24,15 +26,27 @@ public class ParallxActivity extends AppCompatActivity implements ViewPager.OnPa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parallax);
-        frameLayout = (FrameLayout)findViewById(R.id.frame_layout);
+
+        image = (ImageView) findViewById(R.id.image);
+        image2 = (ImageView) findViewById(R.id.image2);
+        image3 = (ImageView) findViewById(R.id.image3);
+        image3.setBackgroundResource(R.drawable.gyro_animation);
+
+        frameLayout = (FrameLayout) findViewById(R.id.frame_layout);
         pager = (ViewPager) findViewById(R.id.pager);
+
         scroll = (HorizontalScrollView) findViewById(R.id.scroll);
         scroll2 = (HorizontalScrollView) findViewById(R.id.scroll2);
-        image = (ImageView) findViewById(R.id.image);
-        image2 = (ImageView)findViewById(R.id.image2);
+
         pageAdapter = new ViewPageAdapter(getSupportFragmentManager());
         pager.setAdapter(pageAdapter);
         pager.addOnPageChangeListener(this);
+        pager.setCurrentItem(1, false);
+
+        AnimationDrawable frameAnimation = (AnimationDrawable) image3.getBackground();
+        frameAnimation.setCallback(image3);
+        frameAnimation.setVisible(true, true);
+        frameAnimation.start();
     }
 
     @Override
@@ -52,7 +66,7 @@ public class ParallxActivity extends AppCompatActivity implements ViewPager.OnPa
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        scrollImage(image.getWidth()/2, position, positionOffsetPixels, scroll);
+        scrollImage(image.getWidth() / 2, position, positionOffsetPixels, scroll);
         scrollImage(frameLayout.getWidth(), position, positionOffsetPixels, scroll2);
     }
 
@@ -73,6 +87,11 @@ public class ParallxActivity extends AppCompatActivity implements ViewPager.OnPa
     @Override
     public void onPageScrollStateChanged(int state) {
 
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
     }
 
     public class ViewPageAdapter extends FragmentStatePagerAdapter {
